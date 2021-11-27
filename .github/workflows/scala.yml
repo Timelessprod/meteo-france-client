@@ -17,6 +17,9 @@ jobs:
     - uses: actions/checkout@v2
     - name: Run tests
       run: sbt test
+      env:
+        MF_USER_ID: ${{ secrets.MF_USER_ID }}
+        MF_USER_KEY: ${{ secrets.MF_USER_KEY }}
 #    - name: Coverage Report
 #      run: sbt coverageReport
 #    - name: Upload coverage to Codecov
