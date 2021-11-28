@@ -1,5 +1,5 @@
+import com.meteofrance.parameters.Api
 import org.scalatest.funsuite.AnyFunSuite
-import com.meteofrance.Api
 
 class MainTest extends AnyFunSuite {
   test("Check user API credentials") {
