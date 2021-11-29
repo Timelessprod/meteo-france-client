@@ -7,7 +7,7 @@ import scala.io.Source
 object Data {
   val UTC: Timezone = Timezone.getTimeZone("UTC")
   Timezone.setDefault(UTC)
-  IsoDateFormat: SimpleDateformat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'")
+  val IsoDateFormat: SimpleDateformat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'")
   
   val COVERAGES_BASE: Array[String] = Source.fromFile("coverages.txt").getLines().toArray
   var COVERAGES: Array[String] = Array()
@@ -79,7 +79,7 @@ object Data {
             val covD: String = cov + "_P"
             
             for (duration <- this.durations(j)) {
-              val covDD: string = covD + duration
+              val covDD: String = covD + duration
               coverages :+= covDD
             }
           }
