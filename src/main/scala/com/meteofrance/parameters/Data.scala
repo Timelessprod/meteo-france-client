@@ -5,7 +5,7 @@ import java.util.{Calendar, TimeZone}
 import scala.io.Source
 
 object Data {
-  val UTC: TimeZone = Timezone.getTimeZone("UTC")
+  val UTC: TimeZone = TimeZone.getTimeZone("UTC")
   TimeZone.setDefault(UTC)
   val IsoDateFormat: SimpleDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'")
   
