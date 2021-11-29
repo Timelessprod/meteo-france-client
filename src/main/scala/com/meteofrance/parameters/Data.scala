@@ -1,13 +1,13 @@
 package com.meteofrance.parameters
 
 import java.text.SimpleDateFormat
-import java.util.{Calendar, Timezone}
+import java.util.{Calendar, TimeZone}
 import scala.io.Source
 
 object Data {
-  val UTC: Timezone = Timezone.getTimeZone("UTC")
-  Timezone.setDefault(UTC)
-  val IsoDateFormat: SimpleDateformat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'")
+  val UTC: TimeZone = Timezone.getTimeZone("UTC")
+  TimeZone.setDefault(UTC)
+  val IsoDateFormat: SimpleDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'")
   
   val COVERAGES_BASE: Array[String] = Source.fromFile("coverages.txt").getLines().toArray
   var COVERAGES: Array[String] = Array()
