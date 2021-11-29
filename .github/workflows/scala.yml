@@ -11,18 +11,21 @@ on:
       - dev
 
 jobs:
-  Tests:
+  build:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
-    - name: Run tests
-      run: sbt test
-      env:
-        MF_USER_ID: ${{ secrets.MF_USER_ID }}
-        MF_USER_KEY: ${{ secrets.MF_USER_KEY }}
-#    - name: Coverage Report
-#      run: sbt coverageReport
-#    - name: Upload coverage to Codecov
-#      uses: codecov/codecov-action@v1
-#      with:
-#        fail_ci_if_error: true
+      - uses: actions/checkout@v2
+      - name: Build project
+        run: sbt compile
+        env:
+          MF_USER_ID: ${{ secrets.MF_USER_ID }}
+          MF_USER_KEY: ${{ secrets.MF_USER_KEY }}
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Run tests
+        run: sbt test
+        env:
+          MF_USER_ID: ${{ secrets.MF_USER_ID }}
+          MF_USER_KEY: ${{ secrets.MF_USER_KEY }}
