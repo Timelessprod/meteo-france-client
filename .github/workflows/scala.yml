@@ -21,6 +21,7 @@ jobs:
           MF_USER_ID: ${{ secrets.MF_USER_ID }}
           MF_USER_KEY: ${{ secrets.MF_USER_KEY }}
   test:
+    needs: build
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
