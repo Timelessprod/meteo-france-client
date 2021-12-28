@@ -1,10 +1,13 @@
 package com.meteofrance.parameters
 
+import com.typesafe.scalalogging.Logger;
 import java.text.SimpleDateFormat
 import java.util.{Calendar, TimeZone}
 import scala.io.Source
 
 object Data {
+  val logger = Logger(this.getClass)
+
   val UTC: TimeZone = TimeZone.getTimeZone("UTC")
   TimeZone.setDefault(UTC)
   val IsoDateFormat: SimpleDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'")
@@ -59,8 +62,10 @@ object Data {
   }
   
   def generateCoverages(modelDate: Calendar) : Array[String] = {
+
     var coverages: Array[String] = Array()
     val model: String = this.IsoDateFormat.format(modelDate.getTime)
+
     
     for (i <- 0 to this.COVERAGES_BASE.length) {
       var cov: String = this.COVERAGES_BASE(i)
