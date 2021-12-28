@@ -10,7 +10,7 @@ object Api {
   // User credentials
   val USER_ID: String = System.getenv("MF_USER_ID")
   val USER_KEY: String = System.getenv("MF_USER_KEY")
-  val USER_CREDENTIALS: String = USER_ID + ":" + USER_KEY
+  var USER_CREDENTIALS: String = USER_ID + ":" + USER_KEY
   val KEY: String = Base64.getEncoder.encodeToString(USER_CREDENTIALS.getBytes(StandardCharsets.UTF_8))
 
   // URL to fetch a new token
