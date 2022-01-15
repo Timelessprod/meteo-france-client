@@ -1,7 +1,7 @@
 package com.meteofrance
 
 import com.meteofrance.exceptions.NullHttpResponseException
-import com.meteofrance.parameters.Global.TIMEOUT
+import com.meteofrance.parameters.Global
 import com.typesafe.scalalogging.Logger
 import okhttp3.{Headers, OkHttpClient, Request, Response}
 
@@ -17,8 +17,8 @@ class HttpRequest(val url: String, val headers: List[(String, String)], val data
   val logger = Logger("HttpRequest")
   val client: OkHttpClient = new OkHttpClient.Builder().followRedirects(false)
                                                        .followSslRedirects(false)
-                                                       .connectTimeout(TIMEOUT, TimeUnit.MILLISECONDS)
-                                                       .readTimeout(TIMEOUT, TimeUnit.MILLISECONDS)
+                                                       .connectTimeout(Global.TIMEOUT, TimeUnit.MILLISECONDS)
+                                                       .readTimeout(Global.TIMEOUT, TimeUnit.MILLISECONDS)
                                                        .build()
 
   /**
@@ -91,9 +91,51 @@ class HttpRequest(val url: String, val headers: List[(String, String)], val data
         }
       }
     } else {
-      logger.warn("API call failed and returned HTTP error code " + response.code + " - \'" + response.message + "\'")
+      logger.warn("API call failed and returned HTTP error code " + response.code +
+        " - \'" + response.message + "\'")
       response.close()
       return null
     }
+  }
+
+  /**
+   * Execute the request to fetch data using class's attributes. In case
+   * of error, retries are done until a fixed limit in the parameters.Global
+   * object.
+   *
+   * @return The response of the request as an array of bytes
+   */
+  def callAPI() : Array[Byte] = {
+    val request: Request = getRequest()
+
+    if (request == null) {
+      logger.error("Request to " + this.url + " is null")
+      return null
+    }
+
+    logger.info("Request to " + this.url + " is built")
+
+    var i = 0
+    var body: Array[Byte] = null
+
+    while (i < Global.FAIL_THRESHOLD && body == null) {
+      body = getResponse(request)
+
+      if (i != 0) {
+        Thread.sleep(Global.SLEEPING_TIME)
+      }
+
+      i += 1
+    }
+
+    if (body == null) {
+      logger.error("Unable to fetch data from the API on " + this.url +
+        " : all " + Global.FAIL_THRESHOLD + " attempts have failed")
+    } else {
+      logger.info("Data successfully fetched from the API on " + this.url +
+        " on try " + i + "/" + Global.FAIL_THRESHOLD)
+    }
+
+    return body
   }
 }
