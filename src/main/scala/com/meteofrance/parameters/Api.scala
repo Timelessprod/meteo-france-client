@@ -5,7 +5,7 @@ import java.util.Base64
 
 object Api {
   // Validity time of the token (minus 1mn for security)
-  val TOKEN_REFRESH_TIME: Long = 3540 // ms
+  var TOKEN_REFRESH_TIME: Long = 3540 // ms
 
   // User credentials
   val USER_ID: String = System.getenv("MF_USER_ID")
