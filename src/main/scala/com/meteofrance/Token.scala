@@ -186,7 +186,7 @@ object Token {
         logger.error("Unable to update token : JSON response contain an error label")
       } else {
         this.token = jsonNode.get("access_token").asText()
-        Api.TOKEN_REFRESH_TIME = jsonNode.get("expires_in")
+        Api.TOKEN_REFRESH_TIME = jsonNode.get("expires_in").asLong() - 60 // Security of 1 minute for network lag
         this.end = this.start + Api.TOKEN_REFRESH_TIME
       }
     }
