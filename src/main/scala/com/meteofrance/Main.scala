@@ -40,4 +40,53 @@ object Main {
     this.term = res
     return res
   }
+
+  /**
+   * Return the date and time at which the model given as argument will be published
+   *
+   * @param modelHour Integer representing the hour of the model corresponding
+   *                  to the release date we want
+   *
+   * @return The timestamp of the release we asked
+   */
+  def getRelease(modelHour: Int): Calendar = {
+    val release: Calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"))
+
+    release.set(Calendar.MILLISECOND, 0)
+    release.set(Calendar.SECOND, 0)
+
+    if (modelHour > this.today.get(Calendar.HOUR_OF_DAY) && modelHour != 21) {
+      release.add(Calendar.DAY_OF_YEAR, -1)
+    }
+
+    if (modelHour == 0) {
+      release.set(Calendar.HOUR_OF_DAY, 2)
+      release.set(Calendar.MINUTE, 45)
+    } else if (modelHour == 3) {
+      release.set(Calendar.HOUR_OF_DAY, 5)
+      release.set(Calendar.MINUTE, 45)
+    } else if (modelHour == 6) {
+      release.set(Calendar.HOUR_OF_DAY, 11)
+      release.set(Calendar.MINUTE, 5)
+    } else if (modelHour == 9) {
+      release.set(Calendar.HOUR_OF_DAY, 12)
+      release.set(Calendar.MINUTE, 30)
+    } else if (modelHour == 12) {
+      release.set(Calendar.HOUR_OF_DAY, 15)
+      release.set(Calendar.MINUTE, 45)
+    } else if (modelHour == 15) {
+      release.set(Calendar.HOUR_OF_DAY, 18)
+      release.set(Calendar.MINUTE, 10)
+    } else if (modelHour == 18) {
+      release.set(Calendar.HOUR_OF_DAY, 22)
+      release.set(Calendar.MINUTE, 45)
+    } else if (modelHour == 21) {
+      release.set(Calendar.HOUR_OF_DAY, 0)
+      release.set(Calendar.MINUTE, 30)
+    } else {
+      return null
+    }
+
+    return release
+  }
 }
