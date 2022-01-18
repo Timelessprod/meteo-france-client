@@ -3,7 +3,11 @@ package com.meteofrance
 import com.typesafe.scalalogging.Logger
 import org.apache.commons.io.FileUtils
 import org.apache.spark.sql.DataFrame
-import org.apache.spark.sql.functions.udf
+import org.apache.spark.sql.functions.{col, udf}
+import com.ph.grib2tools._
+import com.ph.grib2tools.grib2file._
+import com.ph.grib2tools.grib2file.griddefinition.GridDefinitionTemplate30
+import com.ph.grib2tools.grib2file.productdefinition.ProductDefinitionTemplate40
 
 import java.io.{ByteArrayInputStream, File, FileInputStream, InputStream}
 import scala.collection.mutable.ListBuffer
@@ -12,7 +16,7 @@ import scala.collection.mutable.ListBuffer
  * Manage received data and parse GRIB to Dataframe
  */
 object Service {
-  val logger = Logger("Service")
+  val logger: Logger = Logger("Service")
   var locations: ListBuffer[(Double, Double)] = null
 
   /**
@@ -40,44 +44,35 @@ object Service {
 
       val input = new FileInputStream(path)
 
-      // Defines how many GRIB file structures shall be skipped when reading the GRIB2 file. This
+      // Defines how many GRIB2 file structures shall be skipped when reading the GRIB2 file. This
       // is useful since some organizations put several GRIB2 file structures in one file.
-      val numskip: Int = 0
+      val numSkip: Int = 0
 
-      // Id of the grid within the GRIBF2 file, since GRIB2 files can contain several grids
-      val gridid: Int = 0
+      // Id of the grid within the GRIB2 file, since GRIB2 files can contain several grids
+      val gridId: Int = 0
 
       val grib: RandomAccessGribFile = new RandomAccessGribFile("meteo-france", path)
       val input2: InputStream = new ByteArrayInputStream(bytes)
-      grib.importFromStream(input2, numskip)
+      grib.importFromStream(input2, numSkip)
 
       logger.info("GRIB data is being loaded and ready for processing")
 
       val value = (lat: Double, lon: Double) => {
-        grib.getValueAtLocation(gridid, lat, lon).asInstanceOf[Double]
+        grib.getValueAtLocation(gridId, lat, lon).asInstanceOf[Double]
       }
 
-      // this.printGribMetaData(grib)
-
-      println("Processing data")
-
       val valueUDF = udf(value)
-
-      var newDf = df.withColumn(colName, valueUDF(col("Latitude"), col("Longitude")))
-
+      val newDf = df.withColumn(colName, valueUDF(col("Latitude"), col("Longitude")))
 
       if (!file.delete()) {
         logger.error("Cannot delete temporary file !")
       }
-
-      println("End of data processing, GRIB file deleted\n")
       logger.info("End of parsing. GRIB file has been deleted")
 
       return newDf
 
     } catch {
-      case e: Throwable => e.printStackTrace;
-        println("[ERROR] Error processing GRIB file. No data added.\n\n\n");
+      case e: Throwable => e.printStackTrace()
         return df
     }
   }

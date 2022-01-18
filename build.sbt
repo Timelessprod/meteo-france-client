@@ -2,7 +2,7 @@ name := "meteo-france-client"
 
 version := "0.1"
 
-scalaVersion := "3.0.2"
+scalaVersion := "2.13.6"
 
 libraryDependencies += "org.scalatest" %% "scalatest" % "3.2.10" % Test
 libraryDependencies += "ch.qos.logback" % "logback-classic" % "1.2.10"
