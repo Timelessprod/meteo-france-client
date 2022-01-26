@@ -25,12 +25,12 @@ object Token {
   var start: Long = 0
   var end: Long = 0
   val client: OkHttpClient = new OkHttpClient.Builder().followRedirects(false)
-    .followSslRedirects(false)
-    .connectTimeout(Global.TIMEOUT, TimeUnit.MILLISECONDS)
-    .readTimeout(Global.TIMEOUT, TimeUnit.MILLISECONDS)
-    .writeTimeout(Global.TIMEOUT, TimeUnit.MILLISECONDS)
-    .callTimeout(3 * Global.TIMEOUT, TimeUnit.MILLISECONDS)
-    .build()
+                                                       .followSslRedirects(false)
+                                                       .connectTimeout(Global.TIMEOUT, TimeUnit.MILLISECONDS)
+                                                       .readTimeout(Global.TIMEOUT, TimeUnit.MILLISECONDS)
+                                                       .writeTimeout(Global.TIMEOUT, TimeUnit.MILLISECONDS)
+                                                       .callTimeout(3 * Global.TIMEOUT, TimeUnit.MILLISECONDS)
+                                                       .build()
 
   /**
    * Return the token's value in order to put it in the collect requests

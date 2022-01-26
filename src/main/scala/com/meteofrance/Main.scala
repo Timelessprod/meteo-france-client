@@ -3,7 +3,9 @@ package com.meteofrance
 import com.typesafe.scalalogging.Logger
 import org.apache.spark.sql.DataFrame
 
+import java.lang.Long
 import java.text.SimpleDateFormat
+import java.time.temporal.ChronoUnit
 import java.util.{Calendar, TimeZone}
 
 object Main {
@@ -88,5 +90,58 @@ object Main {
     }
 
     return release
+  }
+
+  /**
+   * Define the timestamp of the model corresponding to the given hour as an integer
+   *
+   * @param modelHour Integer representing the hour of the model we want to set
+   */
+  def setModel(modelHour: Int): Unit = {
+    val model: Calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"))
+
+    model.set(Calendar.MILLISECOND, 0)
+    model.set(Calendar.SECOND, 0)
+    model.set(Calendar.MINUTE, 0)
+
+    if (modelHour > this.today.get(Calendar.HOUR_OF_DAY)) {
+      model.add(Calendar.DAY_OF_YEAR, -1)
+    }
+
+    model.set(Calendar.HOUR_OF_DAY, modelHour)
+
+    logger.info("Most recent available Model : " + ISOdf.format(model.getTime))
+
+    this.modelDate = model
+    this.term = getTerm(modelHour)
+  }
+
+  /**
+   * Renvoie le timestamp du modèle le plus récent disponible vis-à-vis des heures
+   * de disponibilité de chaque modèle.
+   */
+  def setModel(): Unit = {
+    // Define release dates from 0h to 21h
+    val releases: Array[Calendar] = 0.to(7).map(i => getRelease(i * 3)).toArray
+
+    // Find the closest one (in the past)
+    var min: Long = Long.MAX_VALUE
+    var index: Int = 0
+
+    for (i <- 0 to releases.size - 1) {
+      var duration = ChronoUnit.SECONDS.between(releases(i).toInstant, this.today.toInstant)
+
+      if (duration < 0) {
+        duration += 86400
+        releases(i).add(Calendar.DAY_OF_YEAR, -1)
+      }
+
+      if (duration < min) {
+        min = duration
+        index = i
+      }
+    }
+
+    setModel(3 * index)
   }
 }
