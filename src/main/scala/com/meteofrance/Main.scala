@@ -117,8 +117,7 @@ object Main {
   }
 
   /**
-   * Renvoie le timestamp du modèle le plus récent disponible vis-à-vis des heures
-   * de disponibilité de chaque modèle.
+   * Set the model according to the closest available model based on current time
    */
   def setModel(): Unit = {
     // Define release dates from 0h to 21h
@@ -144,4 +143,6 @@ object Main {
 
     setModel(3 * index)
   }
+
+
 }
